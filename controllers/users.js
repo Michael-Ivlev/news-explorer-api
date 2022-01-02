@@ -5,6 +5,9 @@ const NotFoundError = require('../errors/not_found');
 const InvalidData = require('../errors/invalid_data');
 const AuthError = require('../errors/auth_error');
 const EmailAlreadyExists = require('../errors/email_already_exists');
+const {
+  invalidDataText, notFoundErrorText, authErrorText, emailAlreadyExistsText,
+} = require('../constants');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -16,10 +19,10 @@ module.exports.currentUser = (req, res, next) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new InvalidData('Invalid data passed to the methods');
+        throw new InvalidData(invalidDataText);
       }
       if (err.name === 'DocumentNotFoundError') {
-        throw new NotFoundError('There is no User with the requested ID');
+        throw new NotFoundError(notFoundErrorText);
       } else {
         next(err);
       }
@@ -33,11 +36,11 @@ module.exports.login = (req, res, next) => {
     .select('+password')
     .then((user) => {
       if (!user) {
-        throw new AuthError('Incorrect password or email');
+        throw new AuthError(authErrorText);
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          throw new AuthError('Incorrect password or email');
+          throw new AuthError(authErrorText);
         }
         const token = jwt.sign(
           { _id: user._id },
@@ -65,10 +68,10 @@ module.exports.createUser = (req, res, next) => {
         .then((user) => res.status(201).send({ _id: user._id, email: user.email }))
         .catch((err) => {
           if (err.message.includes('E11000 duplicate key error collection')) {
-            throw new EmailAlreadyExists('User with this Email already exist');
+            throw new EmailAlreadyExists(emailAlreadyExistsText);
           }
           if (err.name === 'ValidationError' || err.name === 'SyntaxError') {
-            throw new InvalidData('Invalid data passed to the methods');
+            throw new InvalidData(invalidDataText);
           } else {
             next(err);
           }

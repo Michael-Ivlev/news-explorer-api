@@ -2,6 +2,7 @@ const Article = require('../models/article');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not_found');
 const InvalidData = require('../errors/invalid_data');
+const { invalidDataText, notFoundErrorText } = require('../constants');
 
 module.exports.createArticle = (req, res, next) => {
   const {
@@ -23,14 +24,14 @@ module.exports.createArticle = (req, res, next) => {
         .then((article) => res.send(article))
         .catch((err) => {
           if (err.name === 'ValidationError' || err.name === 'SyntaxError') {
-            throw new InvalidData('Invalid data passed to the methods');
+            throw new InvalidData(invalidDataText);
           }
         })
         .catch(next);
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'SyntaxError') {
-        throw new InvalidData('Invalid data passed to the methods');
+        throw new InvalidData(invalidDataText);
       } else {
         next(err);
       }
@@ -44,10 +45,10 @@ module.exports.removeArticleById = (req, res, next) => {
     .then((user) => res.send({ message: `${user._id}has been deleted` }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new InvalidData('Invalid data passed to the methods');
+        throw new InvalidData(invalidDataText);
       }
       if (err.name === 'DocumentNotFoundError') {
-        throw new NotFoundError('There is no user with the requested ID');
+        throw new NotFoundError(notFoundErrorText);
       } else {
         next(err);
       }
@@ -63,14 +64,14 @@ module.exports.getAllUserArticles = (req, res, next) => {
         .then((article) => { res.send(article); })
         .catch((err) => {
           if (err.name === 'ValidationError' || err.name === 'SyntaxError') {
-            throw new InvalidData('Invalid data passed to the methods');
+            throw new InvalidData(invalidDataText);
           }
         })
         .catch(next);
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'SyntaxError') {
-        throw new InvalidData('Invalid data passed to the methods');
+        throw new InvalidData(invalidDataText);
       } else {
         next(err);
       }
