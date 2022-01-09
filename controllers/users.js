@@ -9,7 +9,7 @@ const {
   invalidDataText, notFoundErrorText, authErrorText, emailAlreadyExistsText,
 } = require('../constants');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET } = require('../config');
 
 module.exports.currentUser = (req, res, next) => {
   User.findById(req.user._id)
@@ -42,6 +42,7 @@ module.exports.login = (req, res, next) => {
         if (!matched) {
           throw new AuthError(authErrorText);
         }
+        console.log(NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
         const token = jwt.sign(
           { _id: user._id },
           NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',

@@ -10,7 +10,6 @@ const limiter = require('./limiter/limiter');
 const mainRouter = require('./routes/index');
 const NotFoundError = require('./errors/not_found');
 const { notFoundErrorText } = require('./constants');
-
 const { NODE_ENV, DB_ADRESS, devDbKey } = require('./config');
 
 const { PORT = 3000 } = process.env;

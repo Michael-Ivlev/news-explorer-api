@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
-const NODE_ENV = require('../config');
-const JWT_SECRET = require('../config');
 const AuthError = require('../errors/auth_error');
 const { authErrorAuthText } = require('../constants');
+const { NODE_ENV, JWT_SECRET } = require('../config');
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
@@ -11,9 +10,8 @@ module.exports = (req, res, next) => {
   }
 
   const token = authorization.replace('Bearer ', '');
-
   let payload;
-
+  console.log(NODE_ENV);
   try {
     payload = jwt.verify(
       token,
